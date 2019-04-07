@@ -7,6 +7,7 @@ const sassMiddleware = require('node-sass-middleware');
 
 const indexRouter = require('./routes/index');
 const formRouter = require('./routes/form');
+// const getRouter = require('./routes/getData');
 
 
 const app = express();
@@ -39,6 +40,7 @@ app.use((req, res, next) => {
 
 app.use('/', indexRouter);
 app.use('/form', formRouter);
+// app.use('/getData', getRouter);
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {

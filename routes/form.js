@@ -1,12 +1,15 @@
 const express = require('express');
-const config = require('config');
-const form = require('public/javascripts/main');
-const googleMapsClient = require('@google/maps').createClient({
-  key: 'AIzaSyAQtJi-4ZDqfm6e-OqxzMB5h5TGoAaqox4',
-  Promise,
-});
+const Ajv = require('ajv');
+const Places = require('google-places-web').default;
+// const AdressModel = require('../models/adress');
+const routeSchema = require('../schema/adresValid.json');
 
 const router = express.Router();
+const ajv = new Ajv();
+
+const validate = ajv.compile(routeSchema);
+
+Places.apiKey = require('../controller/geoadress');
 
 /* GET users listing. */
 router.get('/', (req, res) => {
@@ -14,18 +17,28 @@ router.get('/', (req, res) => {
 });
 
 router.post('/', (req, res) => {
-  // console.log(req.body.name);
-  const googleMaps = new googleMapsClient({
-    input,
-  }).asPromise();
+  const partialAddress = validate(req.body.name);
+  const language = 'en';
 
-  googleMaps.placesAutoComplete(req.body.name)
+  if (!partialAddress) {
+    console.log('You did not enter correctly adress');
+    res.send('You did not enter correctly adress');
+  }
+
+  Places.autocomplete({ input: partialAddress, language })
     .then((response) => {
-      console.log(response.json);
+      const dataAdress = { adress: [] };
+      response.forEach((element) => {
+        dataAdress.adress.push({ adr: element.description });
+      });
+      return dataAdress;
     })
-    .catch((err) => {
-      console.log(err);
-    });
+    .then((dataAdress) => {
+      console.log(dataAdress);
+      res.json(dataAdress);
+    })
+    .catch(e => console.log(e));
 });
 
 module.exports = router;
+module.exports = dataAdress;

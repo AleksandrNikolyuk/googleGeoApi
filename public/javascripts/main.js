@@ -1,6 +1,7 @@
+// const axios = require('axios');
 
-const send = document.querySelector('.sendButton');
-let input = document.querySelector('.field');
+// const input = document.querySelector('.field');
+
 // send.addEventListener('click', (e) => {
 //   e.preventDefault();
 //     axios.post('/', {
